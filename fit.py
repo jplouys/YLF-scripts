@@ -351,7 +351,7 @@ def Odr(funcion,x,y,guess,xerr=1,yerr=1, fix=None,taufac=1,maxit=50, ajustar_err
     p_val = stats.t.sf(np.abs(t_stat), len(x)-len(guess)) * 2
     return [param, std, r_squared, chi2r,t_stat,p_val]
 
-def propagador(func, variables, errores, printt=False,sigfig=2):
+def propagador(func, variables, errores, printt=False,sigfig=2, norm2=True):
     """calcula el error absoluto de una funcion del tipo z=f(*variables), cada variable asociada a un error absoluto en errores. No funciona con funciones
     de numpy. (en lugar de usar np.sqrt se puede usar sqrt, la funcion de sympy)
 
@@ -360,6 +360,7 @@ def propagador(func, variables, errores, printt=False,sigfig=2):
         variables (list): punto en el que se quiere evaluar la funcion
         errores (list): errores absolutos del punto
         printt (bool, optional): imprime el valor de la propagacion con su error. Defaults to False.
+        norm2 (bool, optional): si es True, calcula el error como la norma 2 del gradiente de la funcion. Si es False, usa la norma 1. Defaults to True.
 
     Returns:
         list: lista con el valor representativo y su error absoluto de la funcion en el punto dado.
@@ -378,7 +379,10 @@ def propagador(func, variables, errores, printt=False,sigfig=2):
         gradiente_abs.append(parcial(variables[i]))
     gradiente_abs=np.abs(np.array(gradiente_abs))
     errores=np.array(errores)
-    error=float(np.sum(np.dot(gradiente_abs, np.transpose(errores))))
+    if norm2==True:
+        error=float(np.sqrt(np.sum(np.dot(gradiente_abs, np.transpose(errores))**2)))
+    else:
+        error=float(np.sum(np.dot(gradiente_abs, np.transpose(errores))))
     error=round(error, - int(math.floor(math.log10(abs(error))))+sigfig-1) 
     #valor_representativo=round(valor_representativo, decimales(error)) #! no funciona ok
     if printt==True:

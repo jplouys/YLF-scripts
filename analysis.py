@@ -15,6 +15,13 @@ def four_peaks(f, f1, f2, f3, f4, A, Arel2, Arel3, Arel4, gamma1, gamma2, gamma3
 def six_peaks(f, f1, f2, f3, f4, f5, f6, A, Arel2, Arel3, Arel4, Arel5, Arel6, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, offset):
     return A * (lorentzian(f, f1, gamma1) + Arel2 * lorentzian(f, f2, gamma2) + Arel3 * lorentzian(f, f3, gamma3) + Arel4 * lorentzian(f, f4, gamma4) + Arel5 * lorentzian(f, f5, gamma5) + Arel6 * lorentzian(f, f6, gamma6)) + offset
 
+def remove_noise_peaks(f,s):
+    remove_index= s>np.mean(s)+3*np.std(s)
+    f=np.delete(f,remove_index)
+    s=np.delete(s,remove_index)
+    return f,s
+            
+
 dataset_name='24_11_18/100_seconds_80_deg_cooling_300_mA_illumination_low_pressure'
 data=np.loadtxt(dataset_name+'.asc', skiprows=32, delimiter=',')
 f_raw=data[:,0]
@@ -22,6 +29,8 @@ a=np.where(f_raw>940)[0][0]
 b=np.where(f_raw<1000)[0][-1]
 f=f_raw[a:b]
 s=data[a:b,1]
+
+f,s=remove_noise_peaks(f,s)
 
 f1=960.1
 f2=971.5

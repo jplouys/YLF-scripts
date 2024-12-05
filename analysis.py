@@ -4,6 +4,7 @@ from fit import fit
 import glob
 import os
 from tqdm import tqdm as pbar
+from colorama import Fore
 
 
 def lorentzian(x, x0, gamma):
@@ -346,13 +347,13 @@ names = [
     "Offset",
 ]
 bounds = (
-    [f1 - 5, f2 - 5, f3 - 5, 0, 0, 0, 0, 0, 0, 0],
-    [f1 + 5, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, 1000],
+    [f1 - 2, f2 - 5, f3 - 5, 0, 0, 0, 0, 0, 0, 0],
+    [f1 + 2, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, 1000],
 )
 
 # %% General run
 
-data_location = "24_12_02"
+data_location = "24_12_04"
 fit_results_location = "three_peaks"
 os.chdir(data_location)
 file_list = glob.glob("*.asc")
@@ -372,25 +373,26 @@ for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
 
     norm_counts = s[np.argmin(abs(f - 960.1))]
     s /= norm_counts
+    try:
+        fit_results = fit(
+            three_peaks,
+            f,
+            s,
+            xtitle="$\lambda$ [nm]",
+            ytitle="Normalized counts",
+            title=fit_results_location + "/" + dataset_name[:-4],
+            guess=p0,
+            nombre_params=names,
+            msize=5,
+            legend=False,
+            # bounds=bounds,
+            silent=0,
+        )
+        params, errors = fit_results[0], fit_results[1]
 
-    fit_results = fit(
-        three_peaks,
-        f,
-        s,
-        xtitle="$\lambda$ [nm]",
-        ytitle="Normalized counts",
-        title=fit_results_location + "/" + dataset_name[:-4],
-        guess=p0,
-        nombre_params=names,
-        msize=5,
-        legend=False,
-        # bounds=bounds,
-        silent=True,
-    )
-
-    params, errors = fit_results[0], fit_results[1]
-
-    np.save(
-        fit_results_location + "/fit_" + dataset_name[:-4],
-        [params, errors],
-    )
+        np.save(
+            fit_results_location + "/fit_" + dataset_name[:-4],
+            [params, errors],
+        )
+    except:
+        print(Fore.RED + "Fitting failed for", dataset_name, Fore.RESET)

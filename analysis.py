@@ -1,7 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-from fit import *
+import matplotlib.pyplot as plt  # noqa
+from fit import fit
+import glob
+import os
+from tqdm import tqdm as pbar
 
 
 def lorentzian(x, x0, gamma):
@@ -103,24 +105,20 @@ def six_peaks(
     )
 
 
-def remove_noise_peaks(f, s):
-    remove_index = s > np.mean(s) + 2 * np.std(s)
-    f = np.delete(f, remove_index)
-    s = np.delete(s, remove_index)
-    return f, s
+def remove_noise_peaks(f, s, threshold=50):
+    d = abs(np.diff(s)) > threshold
+    d = np.append(d, False)
+    d_copy = d.copy()
+    i = 1
+    while i < len(d):
+        if d[i]:
+            d_copy[i - 1] = True
+            d_copy[i + 1] = True
+        else:
+            pass
+        i += 1
+    return f[True ^ d_copy], s[True ^ d_copy]
 
-
-dataset_name = "24_12_02/51_0_mA_100_sec"
-data = np.loadtxt(dataset_name + ".asc", skiprows=32, delimiter=",")
-f_raw = data[:, 0]
-a = np.where(f_raw > 950)[0][0]
-b = np.where(f_raw < 1000)[0][-1]
-f = f_raw[a:b]
-s = data[a:b, 1]
-
-f, s = remove_noise_peaks(f, s)
-
-s /= 280
 
 f1 = 960.1
 f2 = 971.5
@@ -352,26 +350,47 @@ bounds = (
     [f1 + 5, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, 1000],
 )
 
-norm_counts = s[np.argmin(abs(f - 960.1))]
-s /= norm_counts
+# %% General run
 
-fit_results = fit(
-    three_peaks,
-    f,
-    s,
-    xtitle="$\lambda$ [nm]",
-    ytitle="Normalized counts",
-    title=dataset_name.split("/")[0] + "/three_peaks/" + dataset_name.split("/")[1],
-    guess=p0,
-    nombre_params=names,
-    msize=5,
-    legend=False,
-    # bounds=bounds,
-)
+data_location = "24_12_02"
+fit_results_location = "three_peaks"
+os.chdir(data_location)
+file_list = glob.glob("*.asc")
+if not os.path.exists(fit_results_location):
+    os.makedirs(fit_results_location)
 
-params, errors = fit_results[0], fit_results[1]
 
-np.save(
-    dataset_name.split("/")[0] + "/three_peaks/fit_" + dataset_name.split("/")[1],
-    [params, errors],
-)
+for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
+    data = np.loadtxt(dataset_name, skiprows=32, delimiter=",")
+    f_raw = data[:, 0]
+    a = np.where(f_raw > 950)[0][0]
+    b = np.where(f_raw < 1000)[0][-1]
+    f = f_raw[a:b]
+    s = data[a:b, 1]
+
+    f, s = remove_noise_peaks(f, s)
+
+    norm_counts = s[np.argmin(abs(f - 960.1))]
+    s /= norm_counts
+
+    fit_results = fit(
+        three_peaks,
+        f,
+        s,
+        xtitle="$\lambda$ [nm]",
+        ytitle="Normalized counts",
+        title=fit_results_location + "/" + dataset_name[:-4],
+        guess=p0,
+        nombre_params=names,
+        msize=5,
+        legend=False,
+        # bounds=bounds,
+        silent=True,
+    )
+
+    params, errors = fit_results[0], fit_results[1]
+
+    np.save(
+        fit_results_location + "/fit_" + dataset_name[:-4],
+        [params, errors],
+    )

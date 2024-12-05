@@ -4,7 +4,7 @@ Author: Jean Paul
 Email: jean.louys-sanso@uibk.ac.at
 
 Creation Date: 2024-12-03 10:01:39
- Last Modification Date: 2024-12-05 09:26:49
+ Last Modification Date: 2024-12-05 10:33:38
 
 
 """
@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 date = "24_12_04"
 fit_function = "three_peaks"
+n_peaks = 3
 fit_results_location = date + "/" + fit_function
 
 
@@ -26,8 +27,8 @@ p, e, c = [], [], []
 
 for file in file_list:
     params, errors = np.load(file)
-    amp3 = params[5]
-    error3 = errors[5]
+    amp3 = params[n_peaks + 2]
+    error3 = errors[n_peaks + 2]
     file.split("_")
     current = float(file.split("_")[1] + "." + file.split("_")[2])
     p.append(amp3)

@@ -123,12 +123,13 @@ def remove_noise_peaks(f, s, threshold=50):
 
 f1 = 960.1
 f2 = 971.5
+f2 = 977
 f3 = 992.6
 f4 = 980.6
 f5 = 983.5
 f6 = 995.5
 
-A = 1600
+A = 5
 Arel2 = 2
 Arel3 = 3
 Arel4 = 0.5
@@ -144,92 +145,94 @@ gamma6 = 10
 
 # * Six peaks
 
-# p0 = [
-#     f1,
-#     f2,
-#     f3,
-#     f4,
-#     f5,
-#     f6,
-#     A,
-#     Arel2,
-#     Arel3,
-#     Arel4,
-#     Arel5,
-#     Arel6,
-#     gamma1,
-#     gamma2,
-#     gamma3,
-#     gamma4,
-#     gamma5,
-#     gamma6,
-#     250,
-# ]
-# names = [
-#     "Peak 1",
-#     "Peak 2",
-#     "Peak 3",
-#     "Peak 4",
-#     "Peak 5",
-#     "Peak 6",
-#     "Amplitude",
-#     "Relative amplitude 2",
-#     "Relative amplitude 3",
-#     "Relative amplitude 4",
-#     "Relative amplitude 5",
-#     "Relative amplitude 6",
-#     "HWHM 1",
-#     "HWHM 2",
-#     "HWHM 3",
-#     "HWHM 4",
-#     "HWHM 5",
-#     "HWHM 6",
-#     "Offset",
-# ]
-# bounds = (
-#     [
-#         f1 - 5,
-#         f2 - 5,
-#         f3 - 5,
-#         f4 - 5,
-#         f5 - 5,
-#         f6 - 5,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#         0,
-#     ],
-#     [
-#         f1 + 5,
-#         f2 + 5,
-#         f3 + 5,
-#         f4 + 5,
-#         f5 + 5,
-#         f6 + 5,
-#         5000,
-#         5,
-#         5,
-#         5,
-#         5,
-#         5,
-#         100,
-#         100,
-#         100,
-#         100,
-#         100,
-#         100,
-#         1000,
-#     ],
-# )
+p0 = [
+    f1,
+    f2,
+    f3,
+    f4,
+    f5,
+    f6,
+    A,
+    Arel2,
+    Arel3,
+    Arel4,
+    Arel5,
+    Arel6,
+    gamma1,
+    gamma2,
+    gamma3,
+    gamma4,
+    gamma5,
+    gamma6,
+    250,
+]
+names = [
+    "Peak 1",
+    "Peak 2",
+    "Peak 3",
+    "Peak 4",
+    "Peak 5",
+    "Peak 6",
+    "Amplitude",
+    "Relative amplitude 2",
+    "Relative amplitude 3",
+    "Relative amplitude 4",
+    "Relative amplitude 5",
+    "Relative amplitude 6",
+    "HWHM 1",
+    "HWHM 2",
+    "HWHM 3",
+    "HWHM 4",
+    "HWHM 5",
+    "HWHM 6",
+    "Offset",
+]
+bounds = (
+    [
+        f1 - 5,
+        f2 - 5,
+        f3 - 5,
+        f4 - 5,
+        f5 - 5,
+        f6 - 5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ],
+    [
+        f1 + 5,
+        f2 + 5,
+        f3 + 5,
+        f4 + 5,
+        f5 + 5,
+        f6 + 5,
+        5000,
+        5,
+        5,
+        5,
+        5,
+        5,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        1000,
+    ],
+)
+
+six_peaks_settings = six_peaks, p0, names, bounds
 
 # * Five peaks
 
@@ -307,33 +310,34 @@ bounds = (
         1000,
     ],
 )
+five_peaks_settings = five_peaks, p0, names, bounds
 
 # * Four peaks
 
-# p0 = [f1, f2, f3, f4, A, Arel2, Arel3, Arel4, gamma1, gamma2, gamma3, gamma4, 250]
-# names = [
-#     "Peak 1",
-#     "Peak 2",
-#     "Peak 3",
-#     "Peak 4",
-#     "Amplitude",
-#     "Relative amplitude 2",
-#     "Relative amplitude 3",
-#     "Relative amplitude 4",
-#     "HWHM 1",
-#     "HWHM 2",
-#     "HWHM 3",
-#     "HWHM 4",
-#     "Offset",
-# ]
-# bounds = (
-#     [f1 - 5, f2 - 5, f3 - 5, f4 - 5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#     [f1 + 5, f2 + 5, f3 + 5, f4 + 5, 5000, 5, 5, 5, 100, 100, 100, 100, 1000],
-# )
-
+p0 = [f1, f2, f3, f4, A, Arel2, Arel3, Arel4, gamma1, gamma2, gamma3, gamma4, 250]
+names = [
+    "Peak 1",
+    "Peak 2",
+    "Peak 3",
+    "Peak 4",
+    "Amplitude",
+    "Relative amplitude 2",
+    "Relative amplitude 3",
+    "Relative amplitude 4",
+    "HWHM 1",
+    "HWHM 2",
+    "HWHM 3",
+    "HWHM 4",
+    "Offset",
+]
+bounds = (
+    [f1 - 2, f2 - 2, f3 - 2, f4 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [f1 + 2, f2 + 2, f3 + 2, f4 + 2, 5000, 5, 5, 5, 100, 100, 100, 100, 10000],
+)
+four_peaks_settings = four_peaks, p0, names, bounds
 # * Three peaks
 
-p0 = [f1, f2, f3, A, Arel2, Arel3, gamma1, gamma2, gamma3, 250]
+p0 = [f1, f2, f3, A, Arel2, Arel3, gamma1, gamma2, gamma3, 0]
 names = [
     "Peak 1",
     "Peak 2",
@@ -347,24 +351,29 @@ names = [
     "Offset",
 ]
 bounds = (
-    [f1 - 2, f2 - 5, f3 - 5, 0, 0, 0, 0, 0, 0, 0],
-    [f1 + 2, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, 1000],
+    [f1 - 5, f2 - 5, f3 - 5, -np.inf, -np.inf, -np.inf, 0, 0, 0, -np.inf],
+    [f1 + 5, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, np.inf],
 )
+three_peaks_settings = three_peaks, p0, names, bounds
 
 # %% General run
 
-data_location = "24_12_04"
+location = "24_12_04"
 fit_results_location = "three_peaks"
+fit_function, p0, names, bounds = three_peaks_settings
+
+data_location = location + "/data"
 os.chdir(data_location)
 file_list = glob.glob("*.asc")
+os.chdir("../")
 if not os.path.exists(fit_results_location):
     os.makedirs(fit_results_location)
 
-
+l = "\n"
 for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
-    data = np.loadtxt(dataset_name, skiprows=32, delimiter=",")
+    data = np.loadtxt("data/" + dataset_name, skiprows=32, delimiter=",")
     f_raw = data[:, 0]
-    a = np.where(f_raw > 950)[0][0]
+    a = np.where(f_raw > 955)[0][0]
     b = np.where(f_raw < 1000)[0][-1]
     f = f_raw[a:b]
     s = data[a:b, 1]
@@ -375,7 +384,7 @@ for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
     s /= norm_counts
     try:
         fit_results = fit(
-            three_peaks,
+            fit_function,
             f,
             s,
             xtitle="$\lambda$ [nm]",
@@ -386,7 +395,7 @@ for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
             msize=5,
             legend=False,
             # bounds=bounds,
-            silent=0,
+            silent=1,
         )
         params, errors = fit_results[0], fit_results[1]
 
@@ -395,4 +404,5 @@ for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
             [params, errors],
         )
     except:
-        print(Fore.RED + "Fitting failed for", dataset_name, Fore.RESET)
+        l += "Fitting failed for " + str(dataset_name) + "\n"
+print(Fore.RED + l + Fore.RESET)

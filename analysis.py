@@ -5,6 +5,7 @@ import glob
 import os
 from tqdm import tqdm as pbar
 from colorama import Fore
+import shutil
 
 
 def lorentzian(x, x0, gamma):
@@ -351,14 +352,23 @@ names = [
     "Offset",
 ]
 bounds = (
-    [f1 - 5, f2 - 5, f3 - 5, -np.inf, -np.inf, -np.inf, 0, 0, 0, -np.inf],
+    [f1 - 5, f2 - 8, f3 - 5, 0, 0, 0, 0, 0, 0, 0],
     [f1 + 5, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, np.inf],
 )
 three_peaks_settings = three_peaks, p0, names, bounds
 
 # %% General run
 
-location = "24_12_04"
+location = "24_12_06/1e-6/4"
+if not os.path.exists(location + "/data"):
+    os.makedirs(location + "/data")
+# Move .asc files to data folder
+os.chdir(location)
+file_list = glob.glob("*.asc")
+for file_name in file_list:
+    if file_name.endswith(".asc"):
+        shutil.move(file_name, "data/" + file_name)
+os.chdir("../../../")
 fit_results_location = "three_peaks"
 fit_function, p0, names, bounds = three_peaks_settings
 
@@ -394,7 +404,7 @@ for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
             nombre_params=names,
             msize=5,
             legend=False,
-            # bounds=bounds,
+            bounds=bounds,
             silent=1,
         )
         params, errors = fit_results[0], fit_results[1]

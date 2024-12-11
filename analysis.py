@@ -359,7 +359,7 @@ three_peaks_settings = three_peaks, p0, names, bounds
 
 # %% General run
 
-location = "24_12_06/1e-6/4"
+location = "24_12_09/1e-6/1"
 if not os.path.exists(location + "/data"):
     os.makedirs(location + "/data")
 # Move .asc files to data folder

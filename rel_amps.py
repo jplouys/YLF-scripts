@@ -4,7 +4,7 @@ Author: Jean Paul
 Email: jean.louys-sanso@uibk.ac.at
 
 Creation Date: 2024-12-03 10:01:39
- Last Modification Date: 2024-12-06 15:16:26
+ Last Modification Date: 2024-12-09 10:58:33
 
 
 """
@@ -14,7 +14,7 @@ import glob
 import numpy as np
 import matplotlib.pyplot as plt
 
-date = "24_12_06/1e-6/4"
+date = "24_12_09/1e-6/1"
 fit_function = "three_peaks"
 fit_results_location = date + "/" + fit_function
 

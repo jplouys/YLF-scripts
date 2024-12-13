@@ -4,7 +4,7 @@ Author: Jean Paul
 Email: jean.louys-sanso@uibk.ac.at
 
 Creation Date: 2020
- Last Modification Date: 2024-12-13 10:18:33
+ Last Modification Date: 2024-12-13 14:33:04
 
 This script contains useful functions to implement quick general fitting routines. It was initially created during my Bachelor and I have been adding features since. This version is the most recent one and contains comments in English. It is mainly a wrapper for scipy.optimize.curve_fit and scipy.odr.
 
@@ -776,11 +776,9 @@ def propagador(func, variables, errores, printt=False, sigfig=2, norm2=True):
     gradiente_abs = np.abs(np.array(gradiente_abs))
     errores = np.array(errores)
     if norm2:
-        error = float(
-            np.sqrt(np.sum(np.dot(gradiente_abs, np.transpose(errores)) ** 2))
-        )
+        error = float(np.sqrt(float(np.sum((gradiente_abs * errores) ** 2))))
     else:
-        error = float(np.sum(np.dot(gradiente_abs, np.transpose(errores))))
+        error = float(np.sum((gradiente_abs * errores)))
     error = round(error, -int(math.floor(math.log10(abs(error)))) + sigfig - 1)
     # valor_representativo=round(valor_representativo, decimales(error)) #! not working
     if printt:

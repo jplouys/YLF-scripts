@@ -1,3 +1,15 @@
+"""
+
+Author: Jean Paul
+Email: jean.louys-sanso@uibk.ac.at
+
+Creation Date: 2024-12
+ Last Modification Date: 2024-12-13 09:40:39
+
+This script implements a simple fitting routine to fit N lorentzian peaks to a spectrum. The fitting routine is based on the scipy.optimize.curve_fit function. The script is designed to be used in a folder containing .asc files with the data to be fitted. The fit results are saved as .npy files containing the fit parameters and their errors.
+
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt  # noqa
 from fit import fit
@@ -413,6 +425,6 @@ for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
             fit_results_location + "/fit_" + dataset_name[:-4],
             [params, errors],
         )
-    except:
+    except:  # noqa: E722
         l += "Fitting failed for " + str(dataset_name) + "\n"
 print(Fore.RED + l + Fore.RESET)

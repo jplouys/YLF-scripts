@@ -4,7 +4,7 @@ Author: Jean Paul
 Email: jean.louys-sanso@uibk.ac.at
 
 Creation Date: 2024-12
- Last Modification Date: 2024-12-13 09:40:39
+ Last Modification Date: 2024-12-15 22:48:52
 
 This script implements a simple fitting routine to fit N lorentzian peaks to a spectrum. The fitting routine is based on the scipy.optimize.curve_fit function. The script is designed to be used in a folder containing .asc files with the data to be fitted. The fit results are saved as .npy files containing the fit parameters and their errors.
 
@@ -119,6 +119,35 @@ def six_peaks(
     )
 
 
+def six_peaks_fixed(
+    f,
+    f0,
+    A1,
+    A2,
+    A3,
+    A4,
+    A5,
+    A6,
+    gamma1,
+    gamma2,
+    gamma3,
+    gamma4,
+    gamma5,
+    gamma6,
+    offset,
+):
+    f_peaks = [960.06, 971.53, 980.58, 983.48, 992.56, 995.52]
+    return (
+        A1 * lorentzian(f - f0, f_peaks[0], gamma1)
+        + A2 * lorentzian(f - f0, f_peaks[0], gamma2)
+        + A3 * lorentzian(f - f0, f_peaks[0], gamma3)
+        + A4 * lorentzian(f - f0, f_peaks[0], gamma4)
+        + A5 * lorentzian(f - f0, f_peaks[0], gamma5)
+        + A6 * lorentzian(f - f0, f_peaks[0], gamma6)
+        + offset
+    )
+
+
 def remove_noise_peaks(f, s, threshold=50):
     d = abs(np.diff(s)) > threshold
     d = np.append(d, False)
@@ -141,6 +170,7 @@ f3 = 992.6
 f4 = 980.6
 f5 = 983.5
 f6 = 995.5
+
 
 A = 5
 Arel2 = 2
@@ -247,6 +277,77 @@ bounds = (
 
 six_peaks_settings = six_peaks, p0, names, bounds
 
+# * Six peaks fixed
+f0 = 0
+p0 = [
+    f0,
+    A,
+    A * 2,
+    A * 2,
+    A * 2,
+    A * 2,
+    A * 2,
+    gamma1,
+    gamma2,
+    gamma3,
+    gamma4,
+    gamma5,
+    gamma6,
+    250,
+]
+names = [
+    "Frequency calibration offset",
+    "Amplitude 1",
+    "Amplitude 2",
+    "Amplitude 3",
+    "Amplitude 4",
+    "Amplitude 5",
+    "Amplitude 6",
+    "HWHM 1",
+    "HWHM 2",
+    "HWHM 3",
+    "HWHM 4",
+    "HWHM 5",
+    "HWHM 6",
+    "Offset",
+]
+bounds = (
+    [
+        -10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ],
+    [
+        10,
+        5000,
+        50000,
+        50000,
+        50000,
+        50000,
+        50000,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        1000,
+    ],
+)
+
+six_peaks_fixed_settings = six_peaks_fixed, p0, names, bounds
+
 # * Five peaks
 
 p0 = [
@@ -350,7 +451,7 @@ bounds = (
 four_peaks_settings = four_peaks, p0, names, bounds
 # * Three peaks
 
-p0 = [f1, f2, f3, A, Arel2, Arel3, gamma1, gamma2, gamma3, 0]
+p0 = [f1, f2, f3, A, Arel2, Arel3, gamma1, gamma2, gamma3, 0.2]
 names = [
     "Peak 1",
     "Peak 2",
@@ -365,13 +466,13 @@ names = [
 ]
 bounds = (
     [f1 - 5, f2 - 8, f3 - 5, 0, 0, 0, 0, 0, 0, 0],
-    [f1 + 5, f2 + 5, f3 + 5, 5000, 5, 5, 100, 100, 100, np.inf],
+    [f1 + 5, f2 + 5, f3 + 5, 100, 300, 300, 100, 100, 100, 1],
 )
 three_peaks_settings = three_peaks, p0, names, bounds
 
 # %% General run
 
-location = "24_12_09/1e-6/1"
+location = "24_12_05/1e-6"
 if not os.path.exists(location + "/data"):
     os.makedirs(location + "/data")
 # Move .asc files to data folder
@@ -380,7 +481,7 @@ file_list = glob.glob("*.asc")
 for file_name in file_list:
     if file_name.endswith(".asc"):
         shutil.move(file_name, "data/" + file_name)
-os.chdir("../../../")
+os.chdir("../../")
 fit_results_location = "three_peaks"
 fit_function, p0, names, bounds = three_peaks_settings
 
@@ -390,6 +491,7 @@ file_list = glob.glob("*.asc")
 os.chdir("../")
 if not os.path.exists(fit_results_location):
     os.makedirs(fit_results_location)
+
 
 l = "\n"
 for dataset_name in pbar(file_list, desc="Fitting", colour="green"):
